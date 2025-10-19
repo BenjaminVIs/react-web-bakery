@@ -2,40 +2,28 @@ import React from "react";
 import logo from "../assets/img/icono.png";
 
 function Contacto() {
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    alert("Gracias por contactarte con Pastelería Mil Sabores 🍰");
-  };
-
   return (
-    <main>
-      <center>
-        <img
-          src={logo}
-          alt="Logo de Pastelería Mil Sabores"
-          width="180"
-          height="180"
-          style={{ marginTop: "20px" }}
-        />
-        <h1 style={{ color: "#5D4037" }}>Contáctanos</h1>
-      </center>
+    <main className="contact-page">
+      <div className="contact-container">
+        <div className="contact-header">
+          <img src={logo} alt="Logo Pastelería Mil Sabores" />
+          <h1>Contáctanos</h1>
+          <p>Completa el formulario y nos pondremos en contacto contigo.</p>
+        </div>
 
-      <div className="container" style={{ maxWidth: "500px", margin: "0 auto" }}>
-        <section className="login-box">
-          <div className="login-header" style={{ textAlign: "center" }}>
-            Formulario de Contacto
-          </div>
-
-          <form onSubmit={handleSubmit}>
-            <label htmlFor="nombre-completo">Nombre Completo</label>
+        <form className="contact-form" onSubmit={(e) => e.preventDefault()}>
+          <div>
+            <label htmlFor="nombre">Nombre Completo</label>
             <input
               type="text"
-              id="nombre-completo"
-              name="nombre-completo"
+              id="nombre"
+              name="nombre"
               placeholder="Ingresa tu nombre"
               required
             />
+          </div>
 
+          <div>
             <label htmlFor="correo">Correo Electrónico</label>
             <input
               type="email"
@@ -44,21 +32,22 @@ function Contacto() {
               placeholder="ejemplo@correo.com"
               required
             />
+          </div>
 
-            <label htmlFor="contenido">Mensaje</label>
+          <div className="full-width">
+            <label htmlFor="mensaje">Mensaje</label>
             <textarea
-              id="contenido"
-              name="contenido"
-              rows="4"
+              id="mensaje"
+              name="mensaje"
               placeholder="Escribe tu mensaje aquí..."
               required
             ></textarea>
+          </div>
 
-            <button className="button" type="submit">
-              Enviar Mensaje
-            </button>
-          </form>
-        </section>
+          <button type="submit" className="button">
+            Enviar Mensaje
+          </button>
+        </form>
       </div>
     </main>
   );

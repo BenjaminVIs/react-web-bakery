@@ -41,7 +41,7 @@ function Productos() {
   ];
 
   const handleVerMas = (id) => {
-    navigate(`/detalle-producto/${id}`);
+    navigate(`/detalle/${id}`);
   };
 
   return (
