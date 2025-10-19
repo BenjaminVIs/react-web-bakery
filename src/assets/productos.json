@@ -1,0 +1,18 @@
+[
+  { "id": 1, "img": "p1.png", "name": "Torta Mil Hojas", "price": "$15.990" },
+  { "id": 2, "img": "p2.png", "name": "Torta Dos Mil Hojas", "price": "$18.990" },
+  { "id": 3, "img": "p3.png", "name": "Torta de Panqueques", "price": "$14.990" },
+  { "id": 4, "img": "p4.png", "name": "Torta Chocolate Suprema", "price": "$16.990" },
+  { "id": 5, "img": "p5.png", "name": "Torta Selva Negra", "price": "$17.990" },
+  { "id": 6, "img": "p6.png", "name": "Torta Merengue Lucuma", "price": "$19.990" },
+  { "id": 7, "img": "p7.png", "name": "Torta Atardecer Púrpura", "price": "$16.490" },
+  { "id": 8, "img": "p8.png", "name": "Torta Sueño de Verano", "price": "$16.990" },
+  { "id": 9, "img": "p9.png", "name": "Galletas de Mantequilla", "price": "$5.990" },
+  { "id": 10, "img": "p10.png", "name": "Pastel de Bodas", "price": "$49.990" },
+  { "id": 11, "img": "p11.png", "name": "Torta de Manjar Nuez", "price": "$18.490" },
+  { "id": 12, "img": "p12.png", "name": "Torta Cuadrada Chocolate y Avena", "price": "$15.490" },
+  { "id": 13, "img": "p13.png", "name": "Mousse de Chocolate", "price": "$12.990" },
+  { "id": 14, "img": "p14.png", "name": "Galletas Veganas de Avena", "price": "$6.490" },
+  { "id": 15, "img": "p15.png", "name": "Pan sin gluten", "price": "$4.990" },
+  { "id": 16, "img": "p16.png", "name": "Empanada de Manzana", "price": "$3.990" }
+]
