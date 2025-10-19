@@ -45,29 +45,44 @@ function Productos() {
   };
 
   return (
-    <main>
-      <center><h1 style={{ color: "#5D4037"}} id="title-productos">Todos los Productos</h1></center>
+    <main className="container-fluid py-4">
+      <h1
+        id="title-productos"
+        className="text-center mb-4"
+        style={{ color: "#5D4037" }}
+      >
+        Todos los Productos
+      </h1>
+
+      {/* Grid responsivo */}
       <div className="container">
-        {productos.map((producto) => (
-          <div key={producto.id} className="card">
-            <div className="image-placeholder">
-              <img
-                src={producto.img}
-                width="250"
-                height="250"
-                alt={producto.name}
-              />
-            </div>
-            <a href="#producto">{producto.name}</a>
-            <div className="price">{producto.price}</div>
-            <button
-              className="button ver-mas"
-              onClick={() => handleVerMas(producto.id)}
+        <div className="row g-4 justify-content-center">
+          {productos.map((producto) => (
+            <div
+              key={producto.id}
+              className="col-12 col-sm-6 col-md-4 col-lg-3 d-flex"
             >
-              Ver más
-            </button>
-          </div>
-        ))}
+              <div className="card flex-fill text-center p-2">
+                <div className="image-placeholder mb-2">
+                  <img
+                    src={producto.img}
+                    alt={producto.name}
+                    className="img-fluid rounded"
+                    style={{ maxHeight: "250px", objectFit: "cover" }}
+                  />
+                </div>
+                <a href="#producto">{producto.name}</a>
+                <div className="price mb-2">{producto.price}</div>
+                <button
+                  className="button ver-mas w-100"
+                  onClick={() => handleVerMas(producto.id)}
+                >
+                  Ver más
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </main>
   );

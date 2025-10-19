@@ -1,50 +1,60 @@
 import React from "react";
 import logo from "../assets/img/icono.png";
+import CenteredLayout from "../components/common/CenteredLayout";
 
 function Registro() {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    alert("Registro enviado 🎂");
+  };
+
   return (
-    <main className="register-page">
+    <CenteredLayout maxWidth="500px" bg="light">
       <div className="register-card">
-        <div className="logo-section">
-          <img src={logo} alt="Logo Pastelería Mil Sabores" />
+        <div className="logo-section text-center mb-3">
+          <img
+            src={logo}
+            alt="Logo Pastelería Mil Sabores"
+            className="img-fluid mb-3"
+            style={{ width: "100px" }}
+          />
+          <h2>Registro de usuario</h2>
         </div>
 
-        <h1>Registro de usuario</h1>
-
-        <form className="register-form" onSubmit={(e) => e.preventDefault()}>
-          <div>
+        <form className="register-form d-flex flex-column gap-3" onSubmit={handleSubmit}>
+          <div className="form-group">
             <label htmlFor="nombre">Nombre completo</label>
-            <input type="text" id="nombre" required />
+            <input type="text" id="nombre" className="form-control" required />
           </div>
 
-          <div>
+          <div className="form-group">
             <label htmlFor="correo1">Correo</label>
-            <input type="email" id="correo1" required />
+            <input type="email" id="correo1" className="form-control" required />
           </div>
 
-          <div>
+          <div className="form-group">
             <label htmlFor="correo2">Confirmar correo</label>
-            <input type="email" id="correo2" required />
+            <input type="email" id="correo2" className="form-control" required />
           </div>
 
-          <div>
+          <div className="form-group">
             <label htmlFor="password">Contraseña</label>
-            <input type="password" id="password" required />
+            <input type="password" id="password" className="form-control" required />
           </div>
 
-          <div>
+          <div className="form-group">
             <label htmlFor="confirm-password">Confirmar contraseña</label>
-            <input type="password" id="confirm-password" required />
+            <input type="password" id="confirm-password" className="form-control" required />
           </div>
 
-          <div>
+          <div className="form-group">
             <label htmlFor="telefono">Teléfono (opcional)</label>
-            <input type="tel" id="telefono" />
+            <input type="tel" id="telefono" className="form-control" />
           </div>
 
-          <div>
+          <div className="form-group">
             <label htmlFor="region">Región</label>
-            <select id="region" required>
+            <select id="region" className="form-select" required>
               <option value="">-- Selecciona la región --</option>
               <option value="santiago">Región Metropolitana de Santiago</option>
               <option value="araucania">Región de la Araucanía</option>
@@ -52,9 +62,9 @@ function Registro() {
             </select>
           </div>
 
-          <div>
+          <div className="form-group">
             <label htmlFor="comuna">Comuna</label>
-            <select id="comuna" required>
+            <select id="comuna" className="form-select" required>
               <option value="">-- Selecciona la comuna --</option>
               <option value="limache">Limache</option>
               <option value="lonquen">Lonquén</option>
@@ -62,14 +72,16 @@ function Registro() {
             </select>
           </div>
 
-          <button type="submit" className="button">Registrar</button>
+          <button type="submit" className="button w-100">
+            Registrar
+          </button>
 
-          <div className="register-link">
+          <div className="register-link text-center mt-2">
             ¿Ya tienes cuenta? <a href="/login">Inicia sesión aquí</a>
           </div>
         </form>
       </div>
-    </main>
+    </CenteredLayout>
   );
 }
 

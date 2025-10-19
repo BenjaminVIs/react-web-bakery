@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 function Carrito() {
   const [cart, setCart] = useState([]);
-  const [couponCode, setCouponCode] = useState(""); // estado para el cupón
+  const [couponCode, setCouponCode] = useState("");
 
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem("cart")) || [];
@@ -42,7 +42,6 @@ function Carrito() {
     0
   );
 
-  // acciones de botones
   const applyCoupon = () => {
     if (!couponCode.trim()) {
       alert("Ingrese un cupón válido");
@@ -57,28 +56,36 @@ function Carrito() {
   };
 
   return (
-    <main>
-      <h2 className="page-title">Mi carrito de compras</h2>
+    <main className="container-fluid py-4">
+      <h2 className="page-title text-center mb-4">
+        Mi carrito de compras
+      </h2>
 
-      <div className="cart-container">
-        <div id="cart-items" className="cart-items">
+      <div className="cart-container row justify-content-center">
+        {/* Lista de productos */}
+        <div id="cart-items" className="cart-items col-12 col-lg-8 mb-4 mb-lg-0">
           {cart.length === 0 ? (
-            <div className="empty-cart">Tu carrito está vacío</div>
+            <div className="empty-cart text-center py-5">
+              Tu carrito está vacío
+            </div>
           ) : (
             cart.map((product) => (
-              <div key={product.id} className="cart-item">
+              <div
+                key={product.id}
+                className="cart-item d-flex flex-column flex-sm-row align-items-center justify-content-between"
+              >
                 <img
                   src={product.imagen}
                   alt={product.nombre}
-                  className="product-image"
+                  className="product-image mb-3 mb-sm-0"
                 />
-                <div className="product-info">
+                <div className="product-info flex-fill text-center text-sm-start">
                   <h3 className="product-name">{product.nombre}</h3>
-                  <p className="product-price">
+                  <p className="product-price mb-2">
                     ${Number(product.precio || 0).toLocaleString()}
                   </p>
 
-                  <div className="quantity-control">
+                  <div className="quantity-control d-flex justify-content-center justify-content-sm-start align-items-center gap-2">
                     <button
                       className="button decrease"
                       onClick={() => decrease(product.id)}
@@ -105,33 +112,41 @@ function Carrito() {
           )}
         </div>
 
-        <aside className="cart-summary">
-          <div className="summary-total">
+        {/* Resumen del carrito */}
+        <aside className="cart-summary col-12 col-lg-3">
+          <div className="summary-total d-flex justify-content-between align-items-baseline mb-3">
             <span>
               <strong>TOTAL:</strong>
             </span>
             <span>
               $
-              <span id="total-amount">{totalCorrecto.toLocaleString()}</span>
+              <span id="total-amount">
+                {totalCorrecto.toLocaleString()}
+              </span>
             </span>
           </div>
 
-          <div className="coupon">
+          <div className="coupon d-flex flex-column flex-sm-row gap-2 mb-3">
             <input
               type="text"
               id="coupon-code"
+              className="form-control"
               placeholder="Ingrese el cupón de descuento"
               value={couponCode}
               onChange={(e) => setCouponCode(e.target.value)}
             />
-            <button id="apply-coupon" className="button" onClick={applyCoupon}>
+            <button
+              id="apply-coupon"
+              className="button"
+              onClick={applyCoupon}
+            >
               APLICAR
             </button>
           </div>
 
           <button
             id="checkout-button"
-            className="button pay-button"
+            className="button pay-button w-100"
             onClick={handleCheckout}
           >
             PAGAR

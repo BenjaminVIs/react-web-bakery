@@ -1,7 +1,6 @@
-import React, { useState, useRef } from "react";
+import React, { useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
-// Importa todas las imágenes igual que en Productos.jsx
 import p1 from "../assets/img/p1.png";
 import p2 from "../assets/img/p2.png";
 import p3 from "../assets/img/p3.png";
@@ -47,76 +46,89 @@ function Detalle() {
 
   if (!producto) {
     return (
-      <main style={{ textAlign: "center", padding: "50px" }}>
+      <main className="text-center py-5">
         <h2>Producto no encontrado</h2>
       </main>
     );
   }
 
-  // Función para agregar al carrito
   const addToCart = () => {
-    // Obtener la cantidad desde el input
     const cantidad = parseInt(cantidadRef.current.value) || 1;
-    
-    // Convertir precio de string a número
     const precioSinSimbolo = producto.price.replace("$", "").replace(".", "");
     const precioNumerico = parseInt(precioSinSimbolo);
-    
-    // Crear objeto para el carrito
+
     const itemCarrito = {
       id: producto.id,
       nombre: producto.name,
       precio: precioNumerico,
       imagen: producto.img,
-      cantidad: cantidad
+      cantidad: cantidad,
     };
-    
-    // Obtener carrito actual de localStorage o iniciar uno nuevo
+
     const carritoActual = JSON.parse(localStorage.getItem("cart")) || [];
-    
-    // Verificar si el producto ya existe en el carrito
-    const productoExistente = carritoActual.findIndex(item => item.id === producto.id);
-    
+    const productoExistente = carritoActual.findIndex((item) => item.id === producto.id);
+
     if (productoExistente >= 0) {
-      // Si existe, sumar cantidad
       carritoActual[productoExistente].cantidad += cantidad;
     } else {
-      // Si no existe, agregar al carrito
       carritoActual.push(itemCarrito);
     }
-    
-    // Guardar carrito actualizado en localStorage
+
     localStorage.setItem("cart", JSON.stringify(carritoActual));
-    
-    // Mostrar mensaje de confirmación
-    alert(`¡${cantidad} ${cantidad > 1 ? 'unidades' : 'unidad'} de ${producto.name} ${cantidad > 1 ? 'añadidas' : 'añadida'} al carrito!`);
-    
-    // Redirigir al carrito
-    navigate('/carrito');
+
+    alert(
+      `¡${cantidad} ${cantidad > 1 ? "unidades" : "unidad"} de ${
+        producto.name
+      } ${cantidad > 1 ? "añadidas" : "añadida"} al carrito!`
+    );
+
+    navigate("/carrito");
   };
 
   return (
-    <main className="producto">
-      <div className="imagenes">
-        <img
-          id="imagenPrincipal"
-          src={producto.img}
-          alt={producto.name}
-        />
-      </div>
-      <div className="info">
-        <h1 id="nombreProducto">{producto.name}</h1>
-        <span id="precio">{producto.price}</span>
-        <p id="descripcion">{producto.desc}</p>
+    <main className="producto container py-4">
+      <div className="row align-items-start justify-content-center gy-4">
+        {/* Imagen del producto */}
+        <div className="col-12 col-md-5 text-center">
+          <img
+            id="imagenPrincipal"
+            src={producto.img}
+            alt={producto.name}
+            className="img-fluid rounded shadow-sm"
+            style={{ maxWidth: "80%" }}
+          />
+        </div>
 
-        <div className="cantidad-container">
-          <label htmlFor="cantidad">Cantidad:</label>
-            <input type="number" id="cantidad" defaultValue="1" min="1" ref={cantidadRef} />
+        {/* Información del producto */}
+        <div className="col-12 col-md-6">
+          <h1 id="nombreProducto" className="mb-2" style={{ color: "#5D4037" }}>
+            {producto.name}
+          </h1>
+          <span id="precio" className="d-block mb-3 fw-bold">
+            {producto.price}
+          </span>
+          <p id="descripcion" className="mb-4">
+            {producto.desc}
+          </p>
+
+          <div className="cantidad-container d-flex align-items-center gap-3">
+            <label htmlFor="cantidad" className="fw-semibold">
+              Cantidad:
+            </label>
+            <input
+              type="number"
+              id="cantidad"
+              defaultValue="1"
+              min="1"
+              ref={cantidadRef}
+              className="form-control"
+              style={{ width: "80px" }}
+            />
             <button className="button" id="addCart" onClick={addToCart}>
               Añadir al carrito
             </button>
+          </div>
         </div>
-
       </div>
     </main>
   );

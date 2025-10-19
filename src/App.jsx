@@ -12,7 +12,9 @@ import Registro from './pages/Registro';
 import Home from './pages/Home';
 import Header from "./components/common/Header";
 import Footer from "./components/common/Footer";
-import '/styles/global.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '../styles/global.css';
 
 function App() {
   return (
