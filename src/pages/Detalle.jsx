@@ -1,5 +1,5 @@
-import React from "react";
-import { useParams } from "react-router-dom";
+import React, { useState, useRef } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 
 // Importa todas las imágenes igual que en Productos.jsx
 import p1 from "../assets/img/p1.png";
@@ -21,6 +21,8 @@ import p16 from "../assets/img/p16.png";
 
 function Detalle() {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const cantidadRef = useRef(null);
 
   const productos = [
     { id: 1, img: p1, name: "Torta Mil Hojas", price: "$15.990", desc: "Deliciosa torta tradicional con capas crujientes y relleno de manjar artesanal." },
@@ -51,6 +53,48 @@ function Detalle() {
     );
   }
 
+  // Función para agregar al carrito
+  const addToCart = () => {
+    // Obtener la cantidad desde el input
+    const cantidad = parseInt(cantidadRef.current.value) || 1;
+    
+    // Convertir precio de string a número
+    const precioSinSimbolo = producto.price.replace("$", "").replace(".", "");
+    const precioNumerico = parseInt(precioSinSimbolo);
+    
+    // Crear objeto para el carrito
+    const itemCarrito = {
+      id: producto.id,
+      nombre: producto.name,
+      precio: precioNumerico,
+      imagen: producto.img,
+      cantidad: cantidad
+    };
+    
+    // Obtener carrito actual de localStorage o iniciar uno nuevo
+    const carritoActual = JSON.parse(localStorage.getItem("cart")) || [];
+    
+    // Verificar si el producto ya existe en el carrito
+    const productoExistente = carritoActual.findIndex(item => item.id === producto.id);
+    
+    if (productoExistente >= 0) {
+      // Si existe, sumar cantidad
+      carritoActual[productoExistente].cantidad += cantidad;
+    } else {
+      // Si no existe, agregar al carrito
+      carritoActual.push(itemCarrito);
+    }
+    
+    // Guardar carrito actualizado en localStorage
+    localStorage.setItem("cart", JSON.stringify(carritoActual));
+    
+    // Mostrar mensaje de confirmación
+    alert(`¡${cantidad} ${cantidad > 1 ? 'unidades' : 'unidad'} de ${producto.name} ${cantidad > 1 ? 'añadidas' : 'añadida'} al carrito!`);
+    
+    // Redirigir al carrito
+    navigate('/carrito');
+  };
+
   return (
     <main className="producto">
       <div className="imagenes">
@@ -67,11 +111,11 @@ function Detalle() {
 
         <div className="cantidad-container">
           <label htmlFor="cantidad">Cantidad:</label>
-            <input type="number" id="cantidad" defaultValue="1" min="1" />
-            <button className="button" id="addCart">
+            <input type="number" id="cantidad" defaultValue="1" min="1" ref={cantidadRef} />
+            <button className="button" id="addCart" onClick={addToCart}>
               Añadir al carrito
             </button>
-</div>
+        </div>
 
       </div>
     </main>
