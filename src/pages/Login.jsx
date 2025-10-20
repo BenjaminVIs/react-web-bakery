@@ -17,7 +17,7 @@ function Login() {
   const validarPassword = (pass) => pass.length >= 4 && pass.length <= 10;
 
   // 💡 Correos con rol administrador
-  const adminEmails = ["dario.admin@gmail.com", "admin@gmail.com"];
+  const adminEmails = ["dario.admin@gmail.com", "admin@gmail.com", "benja.admin@gmail.com"];
 
   const handleSubmit = (e) => {
     e.preventDefault();
