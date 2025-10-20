@@ -8,14 +8,56 @@ function Login() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
+  // === VALIDACIONES ===
+  const validarCorreo = (correo) => {
+    const regex = /^[a-zA-Z0-9._%+-]+@(duoc\.cl|profesor\.duoc\.cl|gmail\.com)$/;
+    return regex.test(correo) && correo.length <= 100;
+  };
+
+  const validarPassword = (pass) => pass.length >= 4 && pass.length <= 10;
+
+  // 💡 Correos con rol administrador
+  const adminEmails = ["dario.admin@gmail.com", "admin@gmail.com"];
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (correo === "admin@pasteleria.cl" && password === "1234") {
-      alert("Inicio de sesión exitoso 🎂");
-      navigate("/");
+    if (!validarCorreo(correo)) {
+      alert("Correo inválido. Solo se permiten @duoc.cl, @profesor.duoc.cl y @gmail.com.");
+      return;
+    }
+
+    if (!validarPassword(password)) {
+      alert("La contraseña debe tener entre 4 y 10 caracteres.");
+      return;
+    }
+
+    const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+    const usuario = usuarios.find(
+      (u) => u.correo === correo && u.password === password
+    );
+
+    if (!usuario) {
+      alert("Usuario o contraseña incorrectos ❌");
+      return;
+    }
+
+    // === Verificar si es administrador ===
+    const esAdmin = adminEmails.includes(correo.toLowerCase());
+
+    if (esAdmin) {
+      // Opción: preguntar si quiere entrar como admin o como usuario
+      const modo = window.confirm("¿Deseas entrar como administrador?");
+      if (modo) {
+        alert(`Bienvenido administrador ${usuario.nombre} 🧁`);
+        navigate("/admin");
+      } else {
+        alert(`Inicio de sesión exitoso ✅\nBienvenido, ${usuario.nombre}`);
+        navigate("/");
+      }
     } else {
-      alert("Credenciales incorrectas ❌");
+      alert(`Inicio de sesión exitoso ✅\nBienvenido, ${usuario.nombre}`);
+      navigate("/");
     }
   };
 

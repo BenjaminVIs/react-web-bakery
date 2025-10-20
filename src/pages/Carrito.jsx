@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 function Carrito() {
   const [cart, setCart] = useState([]);
   const [couponCode, setCouponCode] = useState("");
+  const [discount, setDiscount] = useState(0);
+  const [appliedCoupon, setAppliedCoupon] = useState(null);
 
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem("cart")) || [];
@@ -37,22 +39,56 @@ function Carrito() {
     persist(next);
   };
 
-  const totalCorrecto = cart.reduce(
+  const totalBruto = cart.reduce(
     (acc, p) => acc + Number(p.precio || 0) * Number(p.cantidad || 0),
     0
   );
 
+  const totalFinal = Math.max(totalBruto - discount, 0);
+
+  // === CUPONES DISPONIBLES ===
+  const coupons = {
+    SABOR10: { tipo: "porcentaje", valor: 10 },
+    FELIZ20: { tipo: "porcentaje", valor: 20 },
+    ENVIOGRATIS: { tipo: "fijo", valor: 5000 },
+  };
+
   const applyCoupon = () => {
-    if (!couponCode.trim()) {
+    const code = couponCode.trim().toUpperCase();
+
+    if (!code) {
       alert("Ingrese un cupón válido");
       return;
     }
-    alert(`Cupón "${couponCode}" aplicado (demo).`);
+
+    if (appliedCoupon) {
+      alert(`Ya aplicaste el cupón "${appliedCoupon}".`);
+      return;
+    }
+
+    const data = coupons[code];
+    if (!data) {
+      alert("Cupón no válido ❌");
+      setCouponCode("");
+      return;
+    }
+
+    let descuentoCalculado = 0;
+
+    if (data.tipo === "porcentaje") {
+      descuentoCalculado = (totalBruto * data.valor) / 100;
+    } else if (data.tipo === "fijo") {
+      descuentoCalculado = data.valor;
+    }
+
+    setDiscount(descuentoCalculado);
+    setAppliedCoupon(code);
+    alert(`Cupón "${code}" aplicado: descuento de ${data.tipo === "porcentaje" ? data.valor + "%" : "$" + data.valor.toLocaleString()} ✅`);
     setCouponCode("");
   };
 
   const handleCheckout = () => {
-    alert(`Procediendo al pago. Total: $${totalCorrecto.toLocaleString()}`);
+    alert(`Procediendo al pago. Total a pagar: $${totalFinal.toLocaleString()}`);
   };
 
   return (
@@ -114,16 +150,21 @@ function Carrito() {
 
         {/* Resumen del carrito */}
         <aside className="cart-summary col-12 col-lg-3">
-          <div className="summary-total d-flex justify-content-between align-items-baseline mb-3">
-            <span>
-              <strong>TOTAL:</strong>
-            </span>
-            <span>
-              $
-              <span id="total-amount">
-                {totalCorrecto.toLocaleString()}
-              </span>
-            </span>
+          <div className="summary-total d-flex justify-content-between align-items-baseline mb-2">
+            <span><strong>SUBTOTAL:</strong></span>
+            <span>${totalBruto.toLocaleString()}</span>
+          </div>
+
+          {discount > 0 && (
+            <div className="summary-discount d-flex justify-content-between align-items-baseline mb-2 text-success">
+              <span><strong>DESCUENTO ({appliedCoupon}):</strong></span>
+              <span>- ${discount.toLocaleString()}</span>
+            </div>
+          )}
+
+          <div className="summary-final d-flex justify-content-between align-items-baseline mb-3 border-top pt-2">
+            <span><strong>TOTAL:</strong></span>
+            <span>${totalFinal.toLocaleString()}</span>
           </div>
 
           <div className="coupon d-flex flex-column flex-sm-row gap-2 mb-3">
