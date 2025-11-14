@@ -3,19 +3,13 @@ import icono from "../assets/img/icono.png";
 
 function Nosotros() {
   return (
-    <main>
-      <center>
-        <img
-          src={icono}
-          alt="Imagen de la pastelería"
-          width="180"
-          height="180"
-          style={{ marginTop: "20px" }}
-        />
-        <h1 style={{ color: "#5D4037" }}>Nosotros</h1>
-      </center>
+    <main className="nosotros-page">
+      <div className="nosotros-header">
+        <img src={icono} alt="Logotipo de la pastelería" />
+        <h1>Nosotros</h1>
+      </div>
 
-      <div className="container" style={{ maxWidth: "900px", margin: "0 auto" }}>
+      <div className="nosotros-container">
         <section className="info-box">
           <div className="info-section">
             <h2>Sobre la empresa</h2>
