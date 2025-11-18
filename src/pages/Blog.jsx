@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import p1 from "../assets/img/p1.png";
-import p2 from "../assets/img/p2.png";
+
+const base = import.meta.env.BASE_URL || "/";
 
 function Blog() {
   const posts = [
@@ -9,15 +9,15 @@ function Blog() {
       id: 1,
       title: "TUTORIAL: COMO RELLENAR LA MANGA PASTELERA",
       description:
-        "Aprende paso a paso cómo rellenar la manga pastelera correctamente para lograr decoraciones perfectas en tus postres. Este tutorial te enseña las técnicas básicas y consejos prácticos para evitar errores comunes y aprovechar al máximo tus ingredientes.",
-      image: p1,
+        "Aprende paso a paso cómo rellenar la manga pastelera correctamente...",
+      image: `${base}img/p1.png`,
     },
     {
       id: 2,
       title: "RECETAS DIVERTIDAS Y BUENAS",
       description:
-        "Descubre recetas originales y deliciosas para sorprender a tu familia y amigos. Te mostramos ideas creativas y fáciles de preparar que harán que tus momentos en la cocina sean más divertidos y llenos de sabor.",
-      image: p2,
+        "Descubre recetas originales y deliciosas para sorprender...",
+      image: `${base}img/p2.png`,
     },
   ];
 
@@ -35,6 +35,7 @@ function Blog() {
                 VER CASO
               </Link>
             </div>
+
             <div className="card-image">
               <img src={post.image} alt={post.title} />
             </div>

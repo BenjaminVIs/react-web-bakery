@@ -1,48 +1,71 @@
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../lib/supabaseClient";
 
-// 📸 Importa todas tus imágenes aquí
-import p1 from "../assets/img/p1.png";
-import p2 from "../assets/img/p2.png";
-import p3 from "../assets/img/p3.png";
-import p4 from "../assets/img/p4.png";
-import p5 from "../assets/img/p5.png";
-import p6 from "../assets/img/p6.png";
-import p7 from "../assets/img/p7.png";
-import p8 from "../assets/img/p8.png";
-import p9 from "../assets/img/p9.png";
-import p10 from "../assets/img/p10.png";
-import p11 from "../assets/img/p11.png";
-import p12 from "../assets/img/p12.png";
-import p13 from "../assets/img/p13.png";
-import p14 from "../assets/img/p14.png";
-import p15 from "../assets/img/p15.png";
-import p16 from "../assets/img/p16.png";
+// Resuelve rutas tipo "/img/p1.png" respetando el BASE_URL de Vite
+function resolveImagePath(image) {
+  if (!image) return "";
+  if (/^https?:\/\//.test(image)) return image;
+  const base = import.meta.env.BASE_URL || "/";
+  const path = image.replace(/^\/+/, "");
+  return `${base}${path}`;
+}
+
+const fmtCLP = (n) => `$${Number(n || 0).toLocaleString("es-CL")}`;
 
 function Productos() {
   const navigate = useNavigate();
+  const [productos, setProductos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [errorMsg, setErrorMsg] = useState("");
 
-  const productos = [
-    { id: 1, img: p1, name: "Torta Mil Hojas", price: "$15.990" },
-    { id: 2, img: p2, name: "Torta Dos Mil Hojas", price: "$18.990" },
-    { id: 3, img: p3, name: "Torta de Panqueques", price: "$14.990" },
-    { id: 4, img: p4, name: "Torta Chocolate Suprema", price: "$16.990" },
-    { id: 5, img: p5, name: "Torta Selva Negra", price: "$17.990" },
-    { id: 6, img: p6, name: "Torta Merengue Lucuma", price: "$19.990" },
-    { id: 7, img: p7, name: "Torta Atardecer Púrpura", price: "$16.490" },
-    { id: 8, img: p8, name: "Torta Sueño de Verano", price: "$16.990" },
-    { id: 9, img: p9, name: "Galletas de Mantequilla", price: "$5.990" },
-    { id: 10, img: p10, name: "Pastel de Bodas", price: "$49.990" },
-    { id: 11, img: p11, name: "Torta de Manjar Nuez", price: "$18.490" },
-    { id: 12, img: p12, name: "Torta Cuadrada Chocolate y Avena", price: "$15.490" },
-    { id: 13, img: p13, name: "Mousse de Chocolate", price: "$12.990" },
-    { id: 14, img: p14, name: "Galletas Veganas de Avena", price: "$6.490" },
-    { id: 15, img: p15, name: "Pan sin gluten", price: "$4.990" },
-    { id: 16, img: p16, name: "Empanada de Manzana", price: "$3.990" },
-  ];
+  useEffect(() => {
+    (async () => {
+      try {
+        const { data, error } = await supabase
+          .from("products")
+          .select("id,name,price_cents,image,description,active")
+          // .eq("active", true)  // actívalo si quieres filtrar solo activos
+          .order("id", { ascending: true });
+
+        console.log("[SB products]", {
+          error,
+          count: data?.length,
+          sample: data?.[0],
+        });
+
+        if (error) throw error;
+        setProductos(data || []);
+      } catch (err) {
+        console.error("Error cargando productos:", err);
+        setErrorMsg(err?.message || String(err));
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
 
   const handleVerMas = (id) => {
     navigate(`/detalle/${id}`);
   };
+
+  // === Estados de carga / error, pero manteniendo el estilo general ===
+  if (loading) {
+    return (
+      <main className="container-fluid py-5 text-center">
+        <h2>Cargando productos...</h2>
+      </main>
+    );
+  }
+
+  if (errorMsg) {
+    return (
+      <main className="container-fluid py-5 text-center">
+        <h2>Error al cargar productos</h2>
+        <p>{errorMsg}</p>
+      </main>
+    );
+  }
 
   return (
     <main className="container-fluid py-4">
@@ -54,35 +77,40 @@ function Productos() {
         Todos los Productos
       </h1>
 
-      {/* Grid responsivo */}
       <div className="container">
-        <div className="row g-4 justify-content-center">
-          {productos.map((producto) => (
-            <div
-              key={producto.id}
-              className="col-12 col-sm-6 col-md-4 col-lg-3 d-flex"
-            >
-              <div className="card flex-fill text-center p-2">
-                <div className="image-placeholder mb-2">
-                  <img
-                    src={producto.img}
-                    alt={producto.name}
-                    className="img-fluid rounded"
-                    style={{ maxHeight: "250px", objectFit: "cover" }}
-                  />
+        {productos.length === 0 ? (
+          <div className="text-center py-5">No hay productos disponibles.</div>
+        ) : (
+          <div className="row g-4 justify-content-center">
+            {productos.map((producto) => (
+              <div
+                key={producto.id}
+                className="col-12 col-sm-6 col-md-4 col-lg-3 d-flex"
+              >
+                <div className="card flex-fill text-center p-2">
+                  <div className="image-placeholder mb-2">
+                    <img
+                      src={resolveImagePath(producto.image)}
+                      alt={producto.name}
+                      className="img-fluid rounded"
+                      style={{ maxHeight: "250px", objectFit: "cover" }}
+                    />
+                  </div>
+                  <a href="#producto">{producto.name}</a>
+                  <div className="price mb-2">
+                    {fmtCLP(producto.price_cents)}
+                  </div>
+                  <button
+                    className="button ver-mas w-100"
+                    onClick={() => handleVerMas(producto.id)}
+                  >
+                    Ver más
+                  </button>
                 </div>
-                <a href="#producto">{producto.name}</a>
-                <div className="price mb-2">{producto.price}</div>
-                <button
-                  className="button ver-mas w-100"
-                  onClick={() => handleVerMas(producto.id)}
-                >
-                  Ver más
-                </button>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </main>
   );

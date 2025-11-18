@@ -743,6 +743,226 @@ footer { margin-top: auto; }
   .product-image { width: 100px; height: 100px; }
 }
 
+/* ====================== Nosotros ======================== */
+
+.nosotros-page { background-color: #FFF5E1; }
+
+.nosotros-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.nosotros-header img {
+  width: 160px;
+  height: auto;
+  border-radius: 10px;
+}
+
+.nosotros-header h1 { color: #5D4037; margin: 6px 0 0; }
+
+.nosotros-container {
+  width: 90%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.info-box{
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  color: #5D4037;
+}
+
+.info-section{
+  padding: 20px;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  margin: 0;
+}
+
+.info-section h2 { margin: 0 0 8px; color: #5D4037; }
+.info-section p { margin: 0; line-height: 1.6; color: #333; }
+
+/* ===== Carrito ===== */
+.page-title {
+  text-align: center;
+  margin: 32px 0 12px;
+  color: #5D4037;
+  font-weight: 700;
+}
+
+.cart-container {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.cart-items {
+  flex: 1 1 auto;
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 6px 18px rgba(0,0,0,.08);
+}
+
+.cart-item {
+  display: flex;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid #eee;
+  align-items: center;
+}
+.cart-item:last-child { border-bottom: 0; }
+
+.product-image {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.product-info {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  column-gap: 16px;
+  row-gap: 6px;
+  align-items: center;
+}
+
+.product-info .product-name {
+  grid-column: 1;
+  margin: 0;
+  color: #5D4037;
+  font-weight: 700;
+}
+
+.product-info .product-price {
+  grid-column: 1;
+  margin: 0;
+  font-weight: 700;
+  color: #333;
+}
+
+.quantity-control {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.quantity-control .button {
+  padding: 6px 10px;
+  min-width: 36px;
+  line-height: 1;
+  border-radius: 10px;
+  background: #f7f7f7;
+  color: #5D4037;
+  border: 1px solid #ddd;
+  box-shadow: none;
+}
+
+.quantity-control .button:hover { background: #efefef; }
+
+.product-quantity {
+  width: 64px;
+  text-align: center;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  outline: none;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+.product-quantity:focus {
+  border-color: #ff5e78;
+  box-shadow: 0 0 6px rgba(255,94,120,.35);
+}
+
+.cart-summary {
+  width: 320px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 6px 18px rgba(0,0,0,.08);
+  flex: 0 0 320px;
+  overflow: hidden;
+}
+
+.summary-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 16px;
+  font-size: 1.1rem;
+}
+
+.summary-total strong { color: #5D4037; }
+.summary-total span:last-child { color: #ff5e78; font-weight: 700; }
+
+.coupon {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.coupon input {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  min-width: 0;
+}
+
+.coupon input:focus {
+  border-color: #ff5e78;
+  box-shadow: 0 0 6px rgba(255,94,120,.35);
+}
+
+.cart-summary .button {
+  width: 100%;
+  box-shadow: none;
+  border-radius: 10px;
+}
+
+.coupon .button {
+  width: auto;
+  flex: 0 0 auto;
+  padding: 8px 14px;
+  transform: none;
+}
+
+.empty-cart {
+  text-align: center;
+  padding: 24px;
+  color: #666;
+}
+
+.cart-summary .button:hover,
+.cart-summary .button:active {
+  transform: none;
+}
+
+@media (max-width: 768px) {
+  .cart-container { flex-direction: column; }
+  .cart-summary { width: 100%; flex: 1 1 auto; }
+  .product-image { width: 100px; height: 100px; }
+}
+
+
 /* ======================================================
    Fin de global.css
    ====================================================== */

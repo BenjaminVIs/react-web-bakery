@@ -1,7 +1,5 @@
 import React from "react";
-import logo from "../assets/img/icono.png"
 import { Link } from "react-router-dom";
-
 
 function Admin() {
   return (
@@ -10,9 +8,16 @@ function Admin() {
       <aside className="sidebar bg-white shadow-sm p-3 d-flex flex-lg-column justify-content-between">
         <div>
           <div className="d-flex align-items-center mb-4">
-            <img src={logo} alt="Logo" width="40" height="40" className="me-2" />
+            <img
+              src="/img/icono.png"   // <-- ✔ ahora viene desde public/img
+              alt="Logo"
+              width="40"
+              height="40"
+              className="me-2"
+            />
             <h5 className="m-0">Admin Panel</h5>
           </div>
+
           <ul className="nav flex-lg-column gap-2">
             <li className="nav-item">
               <a className="nav-link active" href="#">

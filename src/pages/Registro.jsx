@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import logo from "../assets/img/icono.png";
 import CenteredLayout from "../components/common/CenteredLayout";
+
+// BASE_URL para GitHub Pages
+const base = import.meta.env.BASE_URL || "/";
 
 function Registro() {
   const [form, setForm] = useState({
@@ -17,7 +19,6 @@ function Registro() {
 
   const navigate = useNavigate();
 
-  // === VALIDACIONES ===
   const validarCorreo = (correo) => {
     const regex = /^[a-zA-Z0-9._%+-]+@(duoc\.cl|profesor\.duoc\.cl|gmail\.com)$/;
     return regex.test(correo) && correo.length <= 100;
@@ -75,8 +76,8 @@ function Registro() {
 
     const nuevoUsuario = {
       nombre,
-      correo: correo1, // 🔹 este campo es el que login usará
-      password,        // 🔹 debe coincidir con el que busca el login
+      correo: correo1,
+      password,
       telefono,
       region,
       comuna,
@@ -94,7 +95,7 @@ function Registro() {
     localStorage.setItem("usuarios", JSON.stringify(usuarios));
 
     alert("Usuario registrado correctamente ✅");
-    navigate("/login"); // 🔹 te redirige al login al terminar
+    navigate("/login");
   };
 
   return (
@@ -102,7 +103,7 @@ function Registro() {
       <div className="register-card">
         <div className="logo-section text-center mb-3">
           <img
-            src={logo}
+            src={`${base}img/icono.png`}
             alt="Logo Pastelería Mil Sabores"
             className="img-fluid mb-3"
             style={{ width: "100px" }}

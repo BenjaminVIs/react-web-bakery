@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import logo from "../assets/img/icono.png";
 import CenteredLayout from "../components/common/CenteredLayout";
+
+// BASE_URL para que funcione en GitHub Pages
+const base = import.meta.env.BASE_URL || "/";
 
 function Login() {
   const [correo, setCorreo] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  // === VALIDACIONES ===
   const validarCorreo = (correo) => {
     const regex = /^[a-zA-Z0-9._%+-]+@(duoc\.cl|profesor\.duoc\.cl|gmail\.com)$/;
     return regex.test(correo) && correo.length <= 100;
@@ -16,8 +17,11 @@ function Login() {
 
   const validarPassword = (pass) => pass.length >= 4 && pass.length <= 10;
 
-  // 💡 Correos con rol administrador
-  const adminEmails = ["dario.admin@gmail.com", "admin@gmail.com", "benja.admin@gmail.com"];
+  const adminEmails = [
+    "dario.admin@gmail.com",
+    "admin@gmail.com",
+    "benja.admin@gmail.com"
+  ];
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -42,11 +46,9 @@ function Login() {
       return;
     }
 
-    // === Verificar si es administrador ===
     const esAdmin = adminEmails.includes(correo.toLowerCase());
 
     if (esAdmin) {
-      // Opción: preguntar si quiere entrar como admin o como usuario
       const modo = window.confirm("¿Deseas entrar como administrador?");
       if (modo) {
         alert(`Bienvenido administrador ${usuario.nombre} 🧁`);
@@ -66,7 +68,7 @@ function Login() {
       <div className="login-card">
         <div className="logo-section text-center mb-3">
           <img
-            src={logo}
+            src={`${base}img/icono.png`}
             alt="Logo Pastelería Mil Sabores"
             className="img-fluid mb-3"
             style={{ width: "100px" }}
@@ -104,8 +106,7 @@ function Login() {
           </button>
 
           <div className="register-link text-center mt-2">
-            ¿No tienes una cuenta?{" "}
-            <Link to="/registro">Regístrate aquí</Link>
+            ¿No tienes una cuenta? <Link to="/registro">Regístrate aquí</Link>
           </div>
         </form>
       </div>

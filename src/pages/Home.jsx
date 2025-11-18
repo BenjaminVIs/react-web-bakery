@@ -1,15 +1,19 @@
 import { Link } from "react-router-dom";
-import icono from "../assets/img/icono.png";
-import p1 from "../assets/img/p1.png";
-import p2 from "../assets/img/p2.png";
-import p3 from "../assets/img/p3.png";
-import p4 from "../assets/img/p4.png";
-import p5 from "../assets/img/p5.png";
-import p6 from "../assets/img/p6.png";
-import p7 from "../assets/img/p7.png";
-import p8 from "../assets/img/p8.png";
+
+const base = import.meta.env.BASE_URL || "/";
 
 function Home() {
+  const destacados = [
+    { img: `${base}img/p1.png`, name: "Torta Mil Hojas", price: "$15.990" },
+    { img: `${base}img/p2.png`, name: "Torta Dos Mil Hojas", price: "$18.990" },
+    { img: `${base}img/p3.png`, name: "Torta de Panqueques", price: "$14.990" },
+    { img: `${base}img/p4.png`, name: "Torta Chocolate Suprema", price: "$16.990" },
+    { img: `${base}img/p5.png`, name: "Torta Selva Negra", price: "$17.990" },
+    { img: `${base}img/p6.png`, name: "Torta Merengue Lúcuma", price: "$19.990" },
+    { img: `${base}img/p7.png`, name: "Torta Atardecer Púrpura", price: "$16.490" },
+    { img: `${base}img/p8.png`, name: "Torta Sueño de Verano", price: "$16.990" },
+  ];
+
   return (
     <main className="container-fluid py-4">
       {/* Botones de inicio de sesión */}
@@ -27,7 +31,6 @@ function Home() {
         <div className="banner-container mx-auto">
           <h1 className="mb-4">Pastelería Mil Sabores</h1>
 
-          {/* Layout original restaurado: texto a la izquierda, imagen a la derecha */}
           <div className="desc-imagen d-flex flex-wrap align-items-center justify-content-between p-3 rounded">
             <div id="description" className="col-12 col-md-7 text-start">
               <p className="lead mb-0">
@@ -39,15 +42,13 @@ function Home() {
                 nuestras promociones especiales y realizar tus pedidos desde
                 cualquier lugar, con la comodidad de recibirlos en tu hogar.
                 Nuestro compromiso es seguir entregando calidad, sabor y
-                tradición en cada producto, adaptándonos a tus necesidades y
-                preferencias. ¡Descubre todo lo que Pastelería Mil Sabores tiene
-                para ti!
+                tradición en cada producto. ¡Descubre todo lo que tenemos para ti!
               </p>
             </div>
 
             <div className="col-12 col-md-4 text-center mt-4 mt-md-0">
               <img
-                src={icono}
+                src={`${base}img/icono.png`}
                 alt="icono"
                 className="img-fluid rounded shadow-sm"
                 style={{ maxWidth: "220px" }}
@@ -66,16 +67,7 @@ function Home() {
       {/* Galería de productos destacados */}
       <section className="container">
         <div className="row g-4 justify-content-center">
-          {[
-            { img: p1, name: "Torta Mil Hojas", price: "$15.990" },
-            { img: p2, name: "Torta Dos Mil Hojas", price: "$18.990" },
-            { img: p3, name: "Torta de Panqueques", price: "$14.990" },
-            { img: p4, name: "Torta Chocolate Suprema", price: "$16.990" },
-            { img: p5, name: "Torta Selva Negra", price: "$17.990" },
-            { img: p6, name: "Torta Merengue Lúcuma", price: "$19.990" },
-            { img: p7, name: "Torta Atardecer Púrpura", price: "$16.490" },
-            { img: p8, name: "Torta Sueño de Verano", price: "$16.990" },
-          ].map((producto, i) => (
+          {destacados.map((producto, i) => (
             <div key={i} className="col-12 col-sm-6 col-md-4 col-lg-3">
               <div className="card h-100">
                 <div className="image-placeholder text-center">
