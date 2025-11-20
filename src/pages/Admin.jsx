@@ -1,6 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
+const base = import.meta.env.BASE_URL || "/";
+
 function Admin() {
   return (
     <div className="admin-dashboard d-flex flex-column flex-lg-row min-vh-100 bg-light">
@@ -9,7 +11,7 @@ function Admin() {
         <div>
           <div className="d-flex align-items-center mb-4">
             <img
-              src="/img/icono.png"   // <-- ✔ ahora viene desde public/img
+              src={`${base}img/icono.png`}
               alt="Logo"
               width="40"
               height="40"
