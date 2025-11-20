@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import CenteredLayout from "../components/common/CenteredLayout";
+import { supabase } from "../lib/supabaseClient";
 
 // BASE_URL para que funcione en GitHub Pages
 const base = import.meta.env.BASE_URL || "/";
@@ -23,7 +24,7 @@ function Login() {
     "benja.admin@gmail.com"
   ];
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!validarCorreo(correo)) {
@@ -36,12 +37,13 @@ function Login() {
       return;
     }
 
-    const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
-    const usuario = usuarios.find(
-      (u) => u.correo === correo && u.password === password
-    );
+    // 🚀 LOGIN EN SUPABASE
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: correo,
+      password: password,
+    });
 
-    if (!usuario) {
+    if (error) {
       alert("Usuario o contraseña incorrectos ❌");
       return;
     }
@@ -51,14 +53,14 @@ function Login() {
     if (esAdmin) {
       const modo = window.confirm("¿Deseas entrar como administrador?");
       if (modo) {
-        alert(`Bienvenido administrador ${usuario.nombre} 🧁`);
+        alert(`Bienvenido administrador 🧁`);
         navigate("/admin");
       } else {
-        alert(`Inicio de sesión exitoso ✅\nBienvenido, ${usuario.nombre}`);
+        alert(`Inicio de sesión exitoso ✅`);
         navigate("/");
       }
     } else {
-      alert(`Inicio de sesión exitoso ✅\nBienvenido, ${usuario.nombre}`);
+      alert(`Inicio de sesión exitoso ✅`);
       navigate("/");
     }
   };

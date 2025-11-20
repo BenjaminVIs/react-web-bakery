@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CenteredLayout from "../components/common/CenteredLayout";
+import { supabase } from "../lib/supabaseClient"; 
 
 // BASE_URL para GitHub Pages
 const base = import.meta.env.BASE_URL || "/";
@@ -30,7 +31,7 @@ function Registro() {
     setForm({ ...form, [e.target.id]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const {
@@ -44,6 +45,7 @@ function Registro() {
       comuna,
     } = form;
 
+    // VALIDACIONES ORIGINALES (NO TOQUÉ NADA)
     if (nombre === "" || nombre.length > 100) {
       alert("Nombre requerido (máx. 100 caracteres).");
       return;
@@ -74,25 +76,27 @@ function Registro() {
       return;
     }
 
-    const nuevoUsuario = {
-      nombre,
-      correo: correo1,
-      password,
-      telefono,
-      region,
-      comuna,
-    };
+    // 🚀 REGISTRO EN SUPABASE (Auth)
+    const { data, error } = await supabase.auth.signUp({
+      email: correo1,
+      password: password,
+    });
 
-    let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
-    const existe = usuarios.find((u) => u.correo === correo1);
-
-    if (existe) {
-      alert("Este correo ya está registrado.");
+    if (error) {
+      console.error("Error en Supabase:", error);
+      alert("No se pudo registrar el usuario: " + error.message);
       return;
     }
 
-    usuarios.push(nuevoUsuario);
-    localStorage.setItem("usuarios", JSON.stringify(usuarios));
+    // 🔥 Guarda datos adicionales en la tabla 'profiles'
+    await supabase.from("profiles").insert({
+      id: data.user.id,
+      nombre: nombre,
+      telefono: telefono,
+      region: region,
+      comuna: comuna,
+      correo: correo1,
+    });
 
     alert("Usuario registrado correctamente ✅");
     navigate("/login");
