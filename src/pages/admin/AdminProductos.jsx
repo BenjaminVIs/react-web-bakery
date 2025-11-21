@@ -44,10 +44,17 @@ function AdminProductos() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const price_cents = Math.round(parseFloat(form.price_display || "0"));
+    
+    // Normalizar ruta de imagen: si no empieza con /img/, agregarlo
+    let imagePath = (form.image || "").trim();
+    if (imagePath && !imagePath.startsWith("/img/") && !imagePath.startsWith("http")) {
+      imagePath = `/img/${imagePath}`;
+    }
+    
     const payload = {
       name: form.name,
       price_cents,
-      image: form.image || null,
+      image: imagePath || null,
       description: form.description || null,
       stock: Number(form.stock || 0),
       active: form.active
@@ -152,10 +159,14 @@ function AdminProductos() {
                   </div>
                   <div className="col-12">
                     <label className="form-label">URL Imagen</label>
-                    <div className="input-group">
-                      <span className="input-group-text">/img/</span>
-                      <input name="image" className="form-control" value={form.image.replace(/^\/img\//,'')} onChange={(e)=>handleChange({target:{name:'image', value:'/img/'+e.target.value, type:'text'}})} placeholder="p1.png" />
-                    </div>
+                    <input 
+                      name="image" 
+                      className="form-control" 
+                      value={form.image} 
+                      onChange={handleChange} 
+                      placeholder="/img/p1.png o nombre-archivo.png" 
+                    />
+                    <small className="text-muted">Usa ruta completa (/img/archivo.png) o solo el nombre (se agregará /img/ automático)</small>
                   </div>
                   <div className="col-12">
                     <label className="form-label">Descripción</label>
