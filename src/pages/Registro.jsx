@@ -84,19 +84,32 @@ function Registro() {
 
     if (error) {
       console.error("Error en Supabase:", error);
-      alert("No se pudo registrar el usuario: " + error.message);
+      const msg = String(error.message || "").toLowerCase();
+      if (msg.includes("for security purposes")) {
+        alert("Demasiados intentos de registro. Espera 60 segundos e inténtalo nuevamente.");
+      } else {
+        alert("No se pudo registrar el usuario: " + error.message);
+      }
       return;
     }
 
-    // 🔥 Guarda datos adicionales en la tabla 'profiles'
-    await supabase.from("profiles").insert({
-      id: data.user.id,
-      nombre: nombre,
-      telefono: telefono,
-      region: region,
-      comuna: comuna,
-      correo: correo1,
-    });
+    // Ignoramos confirmación: siempre intentamos crear perfil
+    if (data?.user?.id) {
+      const { error: upsertErr } = await supabase.from("user_profile").upsert(
+        {
+          user_id: data.user.id,
+          display_name: nombre,
+          role: "user",
+        },
+        { onConflict: "user_id" }
+      );
+      if (upsertErr) {
+        console.error("Error creando perfil en user_profile:", upsertErr);
+        alert("Usuario auth creado pero fallo al crear perfil. Contacta al admin.");
+      } else {
+        console.log("✅ Perfil creado en user_profile");
+      }
+    }
 
     alert("Usuario registrado correctamente ✅");
     navigate("/login");

@@ -11,9 +11,10 @@ function Login() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
+  // Alineamos validación con creación en Admin (acepta cualquier dominio válido). Si quieres restringir, vuelve al regex anterior.
   const validarCorreo = (correo) => {
-    const regex = /^[a-zA-Z0-9._%+-]+@(duoc\.cl|profesor\.duoc\.cl|gmail\.com)$/;
-    return regex.test(correo) && correo.length <= 100;
+    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return regex.test(correo) && correo.length <= 120;
   };
 
   const validarPassword = (pass) => pass.length >= 4 && pass.length <= 10;
@@ -23,6 +24,32 @@ function Login() {
     "admin@gmail.com",
     "benja.admin@gmail.com"
   ];
+
+  // Asegura que exista un perfil en user_profile tras login
+  const ensureProfile = async (user, isAdmin) => {
+    try {
+      if (!user?.id) return;
+      const { data: existing, error: selErr } = await supabase
+        .from("user_profile")
+        .select("user_id")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      if (selErr) {
+        console.error("Error verificando perfil:", selErr);
+        return;
+      }
+      if (existing) return;
+      const display = (user.email || "Usuario").split("@")[0];
+      const { error: insErr } = await supabase.from("user_profile").insert({
+        user_id: user.id,
+        display_name: display,
+        role: isAdmin ? "admin" : "customer",
+      });
+      if (insErr) console.error("Error creando perfil post-login:", insErr);
+    } catch (e) {
+      console.error("ensureProfile error:", e);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -44,11 +71,15 @@ function Login() {
     });
 
     if (error) {
+      // Mensaje genérico (se oculta el de confirmación como pidió el usuario)
       alert("Usuario o contraseña incorrectos ❌");
       return;
     }
 
     const esAdmin = adminEmails.includes(correo.toLowerCase());
+
+    // Crea el perfil si no existe para que aparezca en Admin
+    await ensureProfile(data.user, esAdmin);
 
     if (esAdmin) {
       const modo = window.confirm("¿Deseas entrar como administrador?");

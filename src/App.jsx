@@ -9,14 +9,14 @@ import Nosotros from "./pages/Nosotros";
 import Productos from "./pages/Productos";
 import Registro from "./pages/Registro";
 import Home from "./pages/Home";
-import Admin from "./pages/Admin";
+import Admin from "./pages/admin/Admin";
 import Header from "./components/common/Header";
 import Footer from "./components/common/Footer";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/global.css";
 
-// 🔹 Componente que controla el layout (muestra o no Header/Footer)
+//  Componente que controla el layout (muestra o no Header/Footer)
 function LayoutWrapper() {
   const location = useLocation();
   const hideLayout = location.pathname.startsWith("/admin");
