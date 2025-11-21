@@ -9,7 +9,7 @@ import Nosotros from "./pages/Nosotros";
 import Productos from "./pages/Productos";
 import Registro from "./pages/Registro";
 import Home from "./pages/Home";
-import Admin from "./pages/admin";
+import Admin from "./pages/Admin";
 import Header from "./components/common/Header";
 import Footer from "./components/common/Footer";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";

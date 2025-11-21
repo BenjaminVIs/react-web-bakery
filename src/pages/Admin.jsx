@@ -173,45 +173,39 @@ function Admin() {
 
           <ul className="nav flex-lg-column gap-2">
             <li className="nav-item">
-              <a
-                href="#"
-                className={"nav-link " + (activeMenu === "dashboard" ? "active" : "")}
+              <button
+                type="button"
+                className={"nav-link text-start " + (activeMenu === "dashboard" ? "active" : "")}
                 onClick={() => setActiveMenu("dashboard")}
-              >
-                📊 Dashboard
-              </a>
+              >📊 Dashboard</button>
             </li>
             <li className="nav-item">
-              <a
-                href="#"
-                className={"nav-link " + (activeMenu === "usuarios" ? "active" : "")}
+              <button
+                type="button"
+                className={"nav-link text-start " + (activeMenu === "productos" ? "active" : "")}
+                onClick={() => setActiveMenu("productos")}
+              >🍰 Productos</button>
+            </li>
+            <li className="nav-item">
+              <button
+                type="button"
+                className={"nav-link text-start " + (activeMenu === "pedidos" ? "active" : "")}
+                onClick={() => setActiveMenu("pedidos")}
+              >🛒 Pedidos</button>
+            </li>
+            <li className="nav-item">
+              <button
+                type="button"
+                className={"nav-link text-start " + (activeMenu === "usuarios" ? "active" : "")}
                 onClick={() => setActiveMenu("usuarios")}
-              >
-                🍰 Productos
-              </a>
+              >👥 Usuarios</button>
             </li>
             <li className="nav-item">
-              <a
-                href="#"
-                className={"nav-link " + (activeMenu === "usuarios" ? "active" : "")}
-                onClick={() => setActiveMenu("usuarios")}
-              >
-                🛒 Pedidos
-              </a>
-            </li>
-            <li className="nav-item">
-              <a
-                href="#"
-                className={"nav-link " + (activeMenu === "usuarios" ? "active" : "")}
-                onClick={() => setActiveMenu("usuarios")}
-              >
-                👥 Usuarios
-              </a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="#">
-                💬 Comentarios
-              </a>
+              <button
+                type="button"
+                className={"nav-link text-start " + (activeMenu === "comentarios" ? "active" : "")}
+                onClick={() => setActiveMenu("comentarios")}
+              >💬 Comentarios</button>
             </li>
           </ul>
         </div>
@@ -334,6 +328,24 @@ function Admin() {
           </>
         )}
         {activeMenu === "usuarios" && <AdminUsuarios />}
+        {activeMenu === "productos" && (
+          <div>
+            <h2 className="fw-bold mb-3">Gestión de Productos</h2>
+            <p>Placeholder: administración de productos.</p>
+          </div>
+        )}
+        {activeMenu === "pedidos" && (
+          <div>
+            <h2 className="fw-bold mb-3">Gestión de Pedidos</h2>
+            <p>Placeholder: listado y estados de pedidos.</p>
+          </div>
+        )}
+        {activeMenu === "comentarios" && (
+          <div>
+            <h2 className="fw-bold mb-3">Comentarios</h2>
+            <p>Placeholder: moderación y respuesta a comentarios.</p>
+          </div>
+        )}
       </main>
     </div>
   );
