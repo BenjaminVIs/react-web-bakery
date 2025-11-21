@@ -1,21 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabaseClient";
 
-// Posibles valores permitidos por el constraint en BD.
-// Si tu constraint está en inglés usa estos (pending, processing, completed, cancelled).
-// Si finalmente quieres los españoles, cambia value por la versión española y ajusta el CHECK.
+// Valores del constraint orders_status_check: 'pending', 'paid', 'cancelled'
 const STATUS_OPTIONS = [
   { value: "pending", label: "Pendiente" },
-  { value: "processing", label: "En preparación" },
-  { value: "completed", label: "Completado" },
+  { value: "paid", label: "Pagado" },
   { value: "cancelled", label: "Cancelado" }
 ];
 
-// Map de estados antiguos en español -> códigos ingles permitidos
+// Map de estados antiguos -> nuevos valores permitidos
 const LEGACY_STATUS_MAP = {
   pendiente: "pending",
-  en_preparacion: "processing",
-  completado: "completed",
+  en_preparacion: "paid",
+  processing: "paid",
+  completado: "paid",
+  completed: "paid",
   cancelado: "cancelled"
 };
 
@@ -113,14 +112,22 @@ function AdminPedidos() {
       alert("Selecciona un usuario válido.");
       return;
     }
+    
+    // Asegurar que status es uno de los valores permitidos por el constraint
+    const allowedStatuses = ["pending", "paid", "cancelled"];
+    const finalStatus = allowedStatuses.includes(form.status) ? form.status : "pending";
+    
     const payload = {
       user_id: form.user_id,
-      status: form.status,
+      status: finalStatus,
       subtotal_cents: Math.round(Number(form.subtotal_display || 0)),
       discount_cents: Math.round(Number(form.discount_display || 0)),
       total_cents: Math.round(Number(form.total_display || 0)),
       coupon_code: form.coupon_code || null
     };
+    
+    console.log('[PEDIDOS] Enviando payload:', payload);
+    
     let error;
     if (isEditing) {
       ({ error } = await supabase.from("orders").update(payload).eq("id", form.id));
@@ -128,8 +135,8 @@ function AdminPedidos() {
       ({ error } = await supabase.from("orders").insert(payload));
     }
     if (error) {
-      console.error('[PEDIDOS] insert/update error', { payload, error });
-      alert("Error creando/guardando pedido: " + error.message + "\nVer consola para más detalles.");
+      console.error('[PEDIDOS] insert/update error', { payload, error, details: error.details, hint: error.hint });
+      alert("Error creando/guardando pedido: " + error.message + "\nStatus enviado: " + finalStatus + "\nVer consola para más detalles.");
     } else {
       resetForm();
       fetchPedidos();
