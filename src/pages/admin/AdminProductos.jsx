@@ -1,10 +1,23 @@
+/**
+ * Administración de productos.
+ *
+ * Esquema base:
+ * id, name, price_cents, image, description, stock, active, created_at, updated_at
+ *
+ * Notas importantes:
+ * - `price_cents` en esta base de datos representa el precio final (no centavos reales),
+ *   por eso no se hace conversión (se guarda el número tal cual ingresado).
+ * - Se normaliza la ruta de imagen para anteponer `/img/` si el usuario ingresa sólo el nombre.
+ * - El formulario funciona en modo creación y edición controlado con `isEditing`.
+ * - Las operaciones CRUD se realizan directamente sobre Supabase sin capa de servicio todavía.
+ *
+ * Mejoras futuras:
+ * - Extraer lógica a `productsService.js` (similar a pedidos).
+ * - Añadir paginación y filtros (stock, activo, rango de precio).
+ * - Validaciones adicionales (stock máximo, nombre único, longitud descripción).
+ */
 import React, { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabaseClient";
-
-// CRUD productos basado en esquema real:
-// id, name, price_cents, image, description, stock, active, created_at, updated_at
-// NOTA: En tu tabla los valores de price_cents ya representan el precio final en pesos (ej: 15990),
-// no están en centavos. Así que mostramos y guardamos tal cual, sin dividir ni multiplicar por 100.
 
 function AdminProductos() {
   const [productos, setProductos] = useState([]);
@@ -20,6 +33,7 @@ function AdminProductos() {
   });
   const [isEditing, setIsEditing] = useState(false);
 
+  // Carga inicial / recarga de productos
   const fetchProductos = async () => {
     setLoading(true);
     const { data, error } = await supabase
@@ -31,16 +45,19 @@ function AdminProductos() {
   };
   useEffect(() => { fetchProductos(); }, []);
 
+  // Manejo de inputs controlados (incluye checkbox de activo)
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setForm({ ...form, [name]: type === "checkbox" ? checked : value });
   };
 
+  // Reinicia el formulario a estado inicial (modo creación)
   const resetForm = () => {
     setIsEditing(false);
     setForm({ id: null, name: "", price_display: "", image: "", description: "", stock: "", active: true });
   };
 
+  // Submit: inserta o actualiza producto según `isEditing`
   const handleSubmit = async (e) => {
     e.preventDefault();
     const price_cents = Math.round(parseFloat(form.price_display || "0"));
@@ -68,6 +85,7 @@ function AdminProductos() {
     }
   };
 
+  // Activa modo edición con datos existentes
   const handleEdit = (p) => {
     setIsEditing(true);
     setForm({
@@ -81,12 +99,14 @@ function AdminProductos() {
     });
   };
 
+  // Elimina un producto tras confirmación
   const handleDelete = async (id) => {
     if (!window.confirm("¿Eliminar producto?")) return;
     const { error } = await supabase.from("products").delete().eq("id", id);
     if (error) alert(error.message); else fetchProductos();
   };
 
+  // Formato de precio CLP sin decimales
   const formatPrice = (amount) => (amount || 0).toLocaleString("es-CL", { style: "currency", currency: "CLP", minimumFractionDigits: 0 });
 
   return (

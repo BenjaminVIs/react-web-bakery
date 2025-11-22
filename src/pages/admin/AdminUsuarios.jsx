@@ -1,8 +1,29 @@
+/**
+ * Administración de perfiles de usuario (`user_profile`).
+ *
+ * Responsabilidades:
+ * - Listar perfiles existentes (user_id, display_name, role).
+ * - Crear nuevo perfil asociado a un usuario de autenticación Supabase (signUp).
+ * - Editar y eliminar perfiles (no elimina usuario auth, sólo el registro de perfil).
+ * - Generar automáticamente contraseña segura y obtener el UUID del usuario al crear.
+ *
+ * Flujo simplificado:
+ * 1. Admin ingresa correo y opcional contraseña.
+ * 2. Pulsa "Crear Auth + UUID" => se llama a `supabase.auth.signUp` (sin verificación de email).
+ * 3. Se autocompleta user_id en el formulario.
+ * 4. Luego crea el perfil (display_name + role) con upsert.
+ *
+ * Validaciones:
+ * - Correo se valida con regex básico y límite de longitud.
+ * - Se evita crear perfil sin `user_id`.
+ *
+ * Mejoras futuras sugeridas:
+ * - Integrar roles adicionales (vendedor, cliente) y limitar acceso por rol.
+ * - Mostrar estado de confirmación de correo si se habilita verificación.
+ * - Permitir reset de contraseña y envío de correo automático.
+ */
 import React, { useState, useEffect } from "react";
 import { supabase } from "../../lib/supabaseClient";
-
-// CRUD de perfiles de usuario (user_profile).
-// NOTA: Crear cuenta auth se hace fuera (signUp o admin.createUser). Aquí sólo perfil.
 
 function AdminUsuarios() {
   const [usuarios, setUsuarios] = useState([]);
@@ -14,6 +35,7 @@ function AdminUsuarios() {
   const [lastGeneratedPass, setLastGeneratedPass] = useState("");
   // Eliminamos estado de confirmación: flujo sin emails.
 
+  // Carga de perfiles desde la tabla user_profile
   const fetchUsuarios = async () => {
     setLoading(true);
     const { data, error } = await supabase
@@ -33,6 +55,7 @@ function AdminUsuarios() {
     return regex.test(correo) && correo.length <= 120;
   };
 
+  // Generación de contraseña aleatoria evitando caracteres ambiguos
   const generarPassword = (len = 10) => {
     const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@$%";
     let out = "";
@@ -40,6 +63,7 @@ function AdminUsuarios() {
     return out;
   };
 
+  // Crea usuario de autenticación (auth) y recupera su UUID para usarlo en el perfil
   const handleAutoCreateAuthUser = async (e) => {
     e.preventDefault();
     if (isEditing) return; // Solo al crear
@@ -83,6 +107,7 @@ function AdminUsuarios() {
 
   // Reenvío eliminado: no se usan correos de confirmación en este modo.
 
+  // Submit: crea o actualiza perfil (sin afectar credenciales auth si edición)
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isEditing) {
@@ -108,6 +133,7 @@ function AdminUsuarios() {
   };
 
   const handleEdit = (u) => { setForm(u); setIsEditing(true); };
+  // Elimina sólo el perfil (deja intacto el usuario de autenticación)
   const handleDelete = async (user_id) => {
     if (!window.confirm("¿Eliminar perfil?")) return;
     const { error } = await supabase.from('user_profile').delete().eq('user_id', user_id);

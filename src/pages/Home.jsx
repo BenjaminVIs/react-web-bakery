@@ -1,8 +1,10 @@
 import { Link } from "react-router-dom";
+import { useAuthStore } from "../stores/useAuthStore";
 
 const base = import.meta.env.BASE_URL || "/";
 
 function Home() {
+  const user = useAuthStore(s => s.user);
   const destacados = [
     { img: `${base}img/p1.png`, name: "Torta Mil Hojas", price: "$15.990" },
     { img: `${base}img/p2.png`, name: "Torta Dos Mil Hojas", price: "$18.990" },
@@ -16,15 +18,13 @@ function Home() {
 
   return (
     <main className="container-fluid py-4">
-      {/* Botones de inicio de sesión */}
-      <div className="text-end mb-3 px-3">
-        <Link to="/login" className="button me-2">
-          Iniciar sesión
-        </Link>
-        <Link to="/registro" className="button">
-          Registrarse
-        </Link>
-      </div>
+      {/* Botones de inicio de sesión (ocultos si hay usuario autenticado) */}
+      {!user && (
+        <div className="text-end mb-3 px-3">
+          <Link to="/login" className="button me-2">Iniciar sesión</Link>
+          <Link to="/registro" className="button">Registrarse</Link>
+        </div>
+      )}
 
       {/* Banner de introducción */}
       <section id="intro" className="text-center mb-5">

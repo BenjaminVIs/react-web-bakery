@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import CenteredLayout from "../components/common/CenteredLayout";
-import { supabase } from "../lib/supabaseClient"; 
+import { supabase } from "../lib/supabaseClient";
+import { useAuthStore } from "../stores/useAuthStore";
 
 // BASE_URL para GitHub Pages
 const base = import.meta.env.BASE_URL || "/";
@@ -19,6 +20,13 @@ function Registro() {
   });
 
   const navigate = useNavigate();
+  const user = useAuthStore(s => s.user);
+  const logoutStore = useAuthStore(s => s.logout); // Para limpiar store tras registro
+
+  // Redirigir si ya está autenticado
+  useEffect(() => {
+    if (user) navigate('/');
+  }, [user, navigate]);
 
   const validarCorreo = (correo) => {
     const regex = /^[a-zA-Z0-9._%+-]+@(duoc\.cl|profesor\.duoc\.cl|gmail\.com)$/;
@@ -106,12 +114,14 @@ function Registro() {
       if (upsertErr) {
         console.error("Error creando perfil en user_profile:", upsertErr);
         alert("Usuario auth creado pero fallo al crear perfil. Contacta al admin.");
-      } else {
-        console.log("✅ Perfil creado en user_profile");
+        return;
       }
     }
 
-    alert("Usuario registrado correctamente ✅");
+    // ⚠️ IMPORTANTE: Cerrar sesión y limpiar store para evitar sesión automática
+    await logoutStore();
+
+    alert("Usuario registrado exitosamente ✅\n\nAhora puedes iniciar sesión con tu correo y contraseña.");
     navigate("/login");
   };
 

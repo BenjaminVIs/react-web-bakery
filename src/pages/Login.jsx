@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import CenteredLayout from "../components/common/CenteredLayout";
 import { supabase } from "../lib/supabaseClient";
+import { useAuthStore } from "../stores/useAuthStore";
 
 // BASE_URL para que funcione en GitHub Pages
 const base = import.meta.env.BASE_URL || "/";
@@ -10,6 +11,14 @@ function Login() {
   const [correo, setCorreo] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const user = useAuthStore(s => s.user);
+
+  // Redirigir si ya está autenticado
+  useEffect(() => {
+    if (user) navigate('/');
+  }, [user, navigate]);
+  const setUser = useAuthStore(s => s.setUser);
+  const setProfile = useAuthStore(s => s.setProfile);
 
   // Alineamos validación con creación en Admin (acepta cualquier dominio válido). Si quieres restringir, vuelve al regex anterior.
   const validarCorreo = (correo) => {
@@ -78,8 +87,32 @@ function Login() {
 
     const esAdmin = adminEmails.includes(correo.toLowerCase());
 
-    // Crea el perfil si no existe para que aparezca en Admin
+    // Guardar usuario base en store
+    setUser(data.user);
+
+    // Crea el perfil si no existe y luego lo carga para cabecera
     await ensureProfile(data.user, esAdmin);
+    // Recuperar datos del perfil (display_name, role) y guardar junto al email
+    try {
+      const { data: profileRows, error: profErr } = await supabase
+        .from("user_profile")
+        .select("display_name, role")
+        .eq("user_id", data.user.id)
+        .maybeSingle();
+      if (!profErr && profileRows) {
+        setProfile({
+          display_name: profileRows.display_name,
+          role: profileRows.role,
+          email: data.user.email
+        });
+      } else {
+        // fallback mínimo si no se obtiene fila
+        setProfile({ display_name: data.user.email?.split("@")[0] || "Usuario", role: esAdmin ? "admin" : "customer", email: data.user.email });
+      }
+    } catch (eFetch) {
+      console.error("Error cargando perfil:", eFetch);
+      setProfile({ display_name: data.user.email?.split("@")[0] || "Usuario", role: esAdmin ? "admin" : "customer", email: data.user.email });
+    }
 
     if (esAdmin) {
       const modo = window.confirm("¿Deseas entrar como administrador?");

@@ -1,9 +1,57 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuthStore } from "../../stores/useAuthStore";
+import { supabase } from "../../lib/supabaseClient"; // Para carga perezosa de perfil
 
 const base = import.meta.env.BASE_URL || "/";
 
 function Header() {
+  const user = useAuthStore(s => s.user);
+  const profile = useAuthStore(s => s.profile);
+  const logout = useAuthStore(s => s.logout);
+  const setProfile = useAuthStore(s => s.setProfile);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+
+  // Cierra el dropdown al navegar a otra ruta
+  useEffect(() => { setOpen(false); }, [location.pathname]);
+
+  // Carga perezosa del perfil si existe usuario pero no perfil (ej. sesión restaurada del localStorage)
+  useEffect(() => {
+    if (user && !profile) {
+      (async () => {
+        try {
+          const { data: row, error } = await supabase
+            .from('user_profile')
+            .select('display_name, role')
+            .eq('user_id', user.id)
+            .maybeSingle();
+          if (!error && row) {
+            setProfile({
+              display_name: row.display_name,
+              role: row.role,
+              email: user.email
+            });
+          } else {
+            // Fallback mínimo
+            setProfile({
+              display_name: user.email?.split('@')[0] || 'Usuario',
+              role: 'customer',
+              email: user.email
+            });
+          }
+        } catch (e) {
+          console.error('Lazy profile fetch error:', e);
+          setProfile({
+            display_name: user.email?.split('@')[0] || 'Usuario',
+            role: 'customer',
+            email: user.email
+          });
+        }
+      })();
+    }
+  }, [user, profile, setProfile]);
   return (
     <header
       id="main-bar"
@@ -51,9 +99,41 @@ function Header() {
           </nav>
         </div>
 
-        {/* CARRITO */}
-        <div className="d-none d-lg-block">
+        {/* CARRITO + PERFIL */}
+        <div className="d-none d-lg-flex align-items-center gap-3 position-relative ms-auto">
           <Link className="button" to="/carrito">🛒 Carrito</Link>
+          <button
+            type="button"
+            className="button"
+            onClick={() => {
+              if (!user) {
+                navigate('/login');
+              } else {
+                setOpen(o => !o);
+              }
+            }}
+            title={user ? 'Perfil' : 'Iniciar sesión'}
+            style={{ lineHeight: 1 }}
+          >👤</button>
+          {open && profile && (
+            <div
+              className="shadow-sm border bg-white rounded p-2"
+              style={{ position: "absolute", top: "100%", right: 0, minWidth: "220px", zIndex: 50 }}
+            >
+              <div className="small fw-bold mb-1 text-truncate" title={profile.display_name}>{profile.display_name}</div>
+              <div className="small text-muted mb-2 text-truncate" title={profile.email}>{profile.email}</div>
+              {profile.role === 'admin' && location.pathname !== '/admin' && (
+                <div className="alert alert-warning py-1 px-2 mb-2 small">Usuario administrador</div>
+              )}
+              <div className="d-grid">
+                <button
+                  type="button"
+                  className="btn btn-sm btn-outline-danger"
+                  onClick={async () => { await logout(); setOpen(false); navigate('/'); }}
+                >Cerrar sesión</button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </header>

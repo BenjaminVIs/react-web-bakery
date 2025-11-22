@@ -1,3 +1,17 @@
+/**
+ * Panel de métricas rápidas.
+ *
+ * Actualmente muestra valores estáticos (placeholders) para ventas, pedidos activos,
+ * usuarios registrados y productos activos. Se diseñó como área para:
+ * - Incrustar widgets de analytics (ventas por período, desempeño productos).
+ * - Mostrar KPIs calculados desde Supabase (consultas agregadas / RPC).
+ * - Servir como landing principal al ingresar al panel.
+ *
+ * Próximas mejoras sugeridas:
+ * - Reemplazar montos hardcode por consultas agregadas.
+ * - Añadir selector de rango de fechas y gráficas (línea/barras).
+ * - Estados de carga y error diferenciados.
+ */
 import React from "react";
 
 function AdminDashboard() {

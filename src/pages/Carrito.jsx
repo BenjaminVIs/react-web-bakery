@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { useAuthStore } from "../stores/useAuthStore";
 
 function Carrito() {
+  const user = useAuthStore(s => s.user);
   const [cart, setCart] = useState([]);
   const [couponCode, setCouponCode] = useState("");
   const [discount, setDiscount] = useState(0);
@@ -88,6 +91,10 @@ function Carrito() {
   };
 
   const handleCheckout = () => {
+    if (!user) {
+      alert("Debes iniciar sesión para proceder al pago.");
+      return;
+    }
     alert(`Procediendo al pago. Total a pagar: $${totalFinal.toLocaleString()}`);
   };
 
@@ -96,6 +103,12 @@ function Carrito() {
       <h2 className="page-title text-center mb-4">
         Mi carrito de compras
       </h2>
+
+      {!user && (
+        <div className="alert alert-warning text-center mx-auto mb-4" style={{maxWidth: "600px"}}>
+          <strong>⚠️ No has iniciado sesión.</strong> Puedes agregar productos al carrito, pero debes <Link to="/login" className="alert-link">iniciar sesión</Link> para proceder al pago.
+        </div>
+      )}
 
       <div className="cart-container row justify-content-center">
         {/* Lista de productos */}
